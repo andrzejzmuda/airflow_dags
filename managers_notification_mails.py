@@ -17,10 +17,10 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 
-emails = []
-
 
 def get_managers():
+    global emails
+    emails = []
     cur = conn_source.cursor()
     get_managers = """select distinct hr_working_hours_locationtomanager.manager_id, auth_user.email
                         from hr_working_hours_locationtomanager
@@ -35,7 +35,7 @@ def send_mails():
     email_sender = EMAIL_HOST_USER
     email_to = emails
     email_bcc = ['zmua@viessmann.com', 'malt@viessmann.com', 'grkk@viessmann.com']
-    subject = 'Remider: pleasse update all of your time schedules'
+    subject = 'Przypomnienie: proszę zaktualizować grafik godzin pracy.'
 
     msg = MIMEMultipart()
     msg['From'] = email_sender
@@ -43,7 +43,7 @@ def send_mails():
     msg['Bcc'] = ",".join(email_bcc)
     msg['Subject'] = subject
 
-    body = 'This message has been generated automatically. Do not respond.'
+    body = 'Wiadomość została wygenerowana automatycznie. Proszę na nią nie odpowiadać.'
     msg.attach(MIMEText(body, 'plain'))
 
     text = msg.as_string()
