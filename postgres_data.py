@@ -133,18 +133,34 @@ default_args = {
 }
 
 dag = DAG(
-    'postgres_data', default_args=default_args, schedule_interval='*/1 * * * *')
+    'postgres_data',
+    default_args=default_args,
+    schedule_interval='*/1 * * * *',
+    max_active_runs=1
+    )
 
 get_fresh_data_operator = PythonOperator(
-    task_id='get_fresh_data', python_callable=get_fresh_data, dag=dag)
+    task_id='get_fresh_data',
+    python_callable=get_fresh_data,
+    dag=dag
+    )
 
 postgres_operator = PythonOperator(
-    task_id='insert_data', python_callable=insert_data, dag=dag)
+    task_id='insert_data',
+    python_callable=insert_data,
+    dag=dag
+    )
 
 mark_source_uploaded_operator = PythonOperator(
-    task_id='mark_source_uploaded', python_callable=mark_source_uploaded, dag=dag)
+    task_id='mark_source_uploaded',
+    python_callable=mark_source_uploaded,
+    dag=dag
+    )
 
 update_kzz = PythonOperator(
-    task_id='update_kzz', python_callable=update_kzz, dag=dag)
+    task_id='update_kzz',
+    python_callable=update_kzz,
+    dag=dag
+    )
 
 get_fresh_data_operator >> postgres_operator >> mark_source_uploaded_operator >> update_kzz
